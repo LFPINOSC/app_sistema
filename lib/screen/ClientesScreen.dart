@@ -15,7 +15,7 @@ class ClientesScreen extends StatefulWidget {
 }
 
 class _ClientesScreenState extends State<ClientesScreen> {
-  final ClienteService _clienteService = ClienteService();
+  final ClienteServicio _clienteService = ClienteServicio();
   final CiudadServicio _ciudadService = CiudadServicio();
 
   List<Cliente> clientes = [];
@@ -212,7 +212,7 @@ class _ClientesScreenState extends State<ClientesScreen> {
       body: AppList<Cliente>(
         items: clientes,
         loading: loading,
-        emptyMessage: "No existen clientes",
+        emptyText: "No existen clientes",
 
         itemBuilder: (cliente) {
           return Card(

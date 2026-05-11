@@ -4,13 +4,14 @@ class AppList<T> extends StatelessWidget {
   final List<T> items;
   final Widget Function(T item) itemBuilder;
   final bool loading;
-  final String? emptyMessage;
+  final String emptyText;
+
   const AppList({
     super.key,
     required this.items,
     required this.itemBuilder,
     this.loading = false,
-    this.emptyMessage = "Sin datos disponibles",
+    this.emptyText = "No hay datos",
   });
 
   @override
@@ -18,12 +19,16 @@ class AppList<T> extends StatelessWidget {
     if (loading) {
       return const Center(child: CircularProgressIndicator());
     }
+
     if (items.isEmpty) {
-      return Center(child: Text(emptyMessage!));
+      return Center(child: Text(emptyText));
     }
+
     return ListView.builder(
       itemCount: items.length,
-      itemBuilder: (context, index) => itemBuilder(items[index]),
+      itemBuilder: (context, index) {
+        return itemBuilder(items[index]);
+      },
     );
   }
 }

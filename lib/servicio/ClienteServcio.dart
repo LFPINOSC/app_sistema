@@ -4,7 +4,7 @@ import 'package:http/http.dart' as http;
 import '../modelo/Cliente.dart';
 import '../servicio/Apiservicio.dart';
 
-class ClienteService {
+class ClienteServicio {
   final String baseUrl = "${Apiservice.baseUrl}/cliente";
 
   Map<String, String> _headers() {

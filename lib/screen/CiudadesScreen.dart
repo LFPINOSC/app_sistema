@@ -55,15 +55,11 @@ class _CiudadesScreenState extends State<CiudadesScreen> {
               bool ok;
 
               if (ciudad == null) {
-                // Crear nueva ciudad
-                ok = await _service.crearCiudad(
-                  Ciudad(nombre: controller.text),
-                );
+                ok = await _service.crearCiudad(controller.text);
               } else {
-                // Actualizar ciudad existente
                 ok = await _service.actualizarCiudad(
                   ciudad.id!,
-                  Ciudad(nombre: controller.text),
+                  controller.text,
                 );
               }
 
@@ -99,7 +95,7 @@ class _CiudadesScreenState extends State<CiudadesScreen> {
       body: AppList<Ciudad>(
         items: ciudades,
         loading: loading,
-        emptyMessage: "No hay ciudades",
+        emptyText: "No hay ciudades",
         itemBuilder: (ciudad) {
           return Card(
             child: ListTile(

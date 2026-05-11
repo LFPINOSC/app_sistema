@@ -1,12 +1,12 @@
 import 'dart:convert';
-
 import 'package:app_sistema/modelo/Ciudad.dart';
-import 'package:app_sistema/servicio/Apiservicio.dart';
 import 'package:http/http.dart' as http;
+import '../servicio/Apiservicio.dart';
 
 class CiudadServicio {
-  final String urlBase = "${Apiservice.baseUrl}/ciudad";
-  Map<String, String> headers() {
+  final String baseUrl = "${Apiservice.baseUrl}/ciudad";
+
+  Map<String, String> _headers() {
     return {
       "Content-Type": "application/json",
       "Authorization": "Bearer ${Apiservice.token}",
@@ -14,59 +14,42 @@ class CiudadServicio {
   }
 
   Future<List<Ciudad>> getCiudades() async {
-    try {
-      final response = await http.get(Uri.parse(urlBase), headers: headers());
-      if (response.statusCode == 200) {
-        return jsonDecode(
-          response.body,
-        ).map((e) => Ciudad.fromJson(e)).toList();
-      } else {
-        throw Exception("Failed to load ciudades");
-      }
-    } catch (e) {
-      print("Error fetching ciudades: $e");
-      throw Exception("Error fetching ciudades");
+    final response = await http.get(Uri.parse(baseUrl), headers: _headers());
+
+    if (response.statusCode == 200) {
+      List data = jsonDecode(response.body);
+      return data.map((e) => Ciudad.fromJson(e)).toList();
     }
+
+    return [];
   }
 
-  Future<bool> crearCiudad(Ciudad ciudad) async {
-    try {
-      final response = await http.post(
-        Uri.parse(urlBase),
-        headers: headers(),
-        body: jsonEncode(ciudad.toJson()),
-      );
-      return response.statusCode == 201;
-    } catch (e) {
-      print("Error creating ciudad: $e");
-      return false;
-    }
+  Future<bool> crearCiudad(String nombre) async {
+    final response = await http.post(
+      Uri.parse(baseUrl),
+      headers: _headers(),
+      body: jsonEncode({"nombre": nombre}),
+    );
+
+    return response.statusCode == 201;
+  }
+
+  Future<bool> actualizarCiudad(int id, String nombre) async {
+    final response = await http.put(
+      Uri.parse("$baseUrl/$id"),
+      headers: _headers(),
+      body: jsonEncode({"nombre": nombre}),
+    );
+
+    return response.statusCode == 200;
   }
 
   Future<bool> eliminarCiudad(int id) async {
-    try {
-      final response = await http.delete(
-        Uri.parse("$urlBase/$id"),
-        headers: headers(),
-      );
-      return response.statusCode == 204;
-    } catch (e) {
-      print("Error deleting ciudad: $e");
-      return false;
-    }
-  }
+    final response = await http.delete(
+      Uri.parse("$baseUrl/$id"),
+      headers: _headers(),
+    );
 
-  Future<bool> actualizarCiudad(int id, Ciudad ciudad) async {
-    try {
-      final response = await http.put(
-        Uri.parse("$urlBase/$id"),
-        headers: headers(),
-        body: jsonEncode(ciudad.toJson()),
-      );
-      return response.statusCode == 200;
-    } catch (e) {
-      print("Error updating ciudad: $e");
-      return false;
-    }
+    return response.statusCode == 200;
   }
 }
